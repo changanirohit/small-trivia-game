@@ -1,0 +1,64 @@
+.message-container {
+  position: fixed;
+  top: -100px; /* Set an initial value above the viewport */
+  right: 25px;
+  max-width: 350px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #66847C;
+  background-color: #FFF;
+  border: 2px solid #66847C;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  }
+  
+  .message-container.show {
+    top: 25px;
+    opacity: 1;
+  padding: 20px;
+
+  }
+  .option-label{
+    margin: 8px;
+    box-shadow: 0px 0px 10px 1px #a2a3a3;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Times New Roman', Times, serif;
+    min-width: 100%;
+    min-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .option-label:hover{
+    background-color: pink;
+    cursor: pointer;
+
+  }
+  .option-radio{
+    display: none;
+  }
+  .message-container p {
+    margin: 0;
+  }
+  
+  /* Additional styles for the flash message */
+  .flash__body {
+    margin: 0;
+  }
+  
+  /* Animation keyframes */
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
