@@ -98,7 +98,7 @@ function Quiz() {
         if (isOptionCorrect(selectedOption)) {
             // Correct answer
             setScore(score + 1);
-            showFlashMessage('success', 'Correct the answer ');
+            showFlashMessage('success', 'Your answer is Correct');
         } else {
             // Incorrect answer
             setIncorrectCount(incorrectCount + 1);
