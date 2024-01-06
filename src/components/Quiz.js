@@ -7,7 +7,7 @@ import './styles.css';
 function Quiz() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
-    const isMounted = useRef(true);
+    const [incorrectCount, setIncorrectCount] = useState(0);
     const [clickedOption, setClickedOption] = useState(0);
     const [showResult, setShowResult] = useState(false);
     const [quizData, setQuizData] = useState([]);
@@ -15,9 +15,9 @@ function Quiz() {
     const [errorMessage, setErrorMessage] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [state, setState] = useState(true);
+    const isMounted = useRef(true);
 
     // api fatch
-    console.log(quizData, 'datasubmit');
     useEffect(() => {
         const fetchTriviaData = async () => {
             if (state && isMounted.current) {
@@ -55,20 +55,17 @@ function Quiz() {
 
     // submitAnswer screen
     const submitAnswer = () => {
-        if (String(clickedOption) !== '0' && !submitted) {
+        if (!submitted) {
             updateScore();
             setSubmitted(true);
-        } else if (String(clickedOption) === '0') {
-            setErrorMessage('Please select an answer before submitting.');
-            showFlashMessage('error', 'Please select an answer before submitting.'); // Display flash message
-        }
+        } 
     };
 
     //showFlashMessage 
     const showFlashMessage = (type, message) => {
         if (type === 'success') {
             setSuccessMessage(message);
-            setTimeout(() => setSuccessMessage(''), 2500); // Hide success message after 3.5 seconds
+            setTimeout(() => setSuccessMessage(''), 2000); // Hide success message after 3.5 seconds
         } else if (type === 'error') {
             const options = [...quizData[currentQuestion]?.incorrect_answers, quizData[currentQuestion]?.correct_answer];
             const correctAnswerIndex = options.indexOf(quizData[currentQuestion]?.correct_answer);
@@ -87,9 +84,6 @@ function Quiz() {
     //correct answer and select option match value
     const isOptionCorrect = (selectedOption) => {
         const correctAnswer = quizData[currentQuestion]?.correct_answer;
-        console.log("selected: " + selectedOption);
-        console.log("correct: " + correctAnswer);
-        console.log(selectedOption === correctAnswer);
         return selectedOption === correctAnswer;
     };
 
@@ -107,6 +101,7 @@ function Quiz() {
             showFlashMessage('success', 'Correct the answer ');
         } else {
             // Incorrect answer
+            setIncorrectCount(incorrectCount + 1);
             showFlashMessage('error', `Oops! Your answer is wrong. Correct answer: ${options[correctAnswerIndex]}`);
         }
     };
@@ -125,7 +120,7 @@ function Quiz() {
             <p className="heading-txt">Quiz APP</p>
             <div className="container">
                 {showResult ? (
-                    <QuizResult score={score} totalScore={quizData.length} tryAgain={resetAll} />
+                    <QuizResult score={score} incorrectCount={incorrectCount} totalScore={quizData.length} tryAgain={resetAll} />
                 ) : (
                     <>
                         <div className="question">
@@ -133,7 +128,7 @@ function Quiz() {
                             <span id="question-txt">{quizData[currentQuestion]?.question}</span>
                         </div>
                         <div className="option-container">
-                            {quizData[currentQuestion]?.type === 'multiple' && Array.isArray(quizData[currentQuestion]?.incorrect_answers) && quizData[currentQuestion]?.incorrect_answers.length > 0 ? (
+                            {Array.isArray(quizData[currentQuestion]?.incorrect_answers) && quizData[currentQuestion]?.incorrect_answers.length > 0 ? (
                                 // Render options for multiple-choice questions
                                 [...quizData[currentQuestion]?.incorrect_answers, quizData[currentQuestion]?.correct_answer].map((option, i) => (
                                     <label key={i} className={`option-label ${clickedOption === i + 1 ? 'checked' : ''}`}>
@@ -143,20 +138,6 @@ function Quiz() {
                                             name="quizOption"
                                             checked={clickedOption === i + 1}
                                             onChange={() => setClickedOption(i + 1)}
-                                        />
-                                        {option}
-                                    </label>
-                                ))
-                                // boolean value true false input value pass
-                            ) : quizData[currentQuestion]?.type === 'boolean' ? (
-                                ['True', 'False'].map((option, i) => (
-                                    <label key={i} className={`option-label ${clickedOption === i + 1 ? 'checked' : ''}`} onClick={() => setClickedOption(i + 1)}>
-                                        <input
-                                            type="radio"
-                                            className="option-radio"
-                                            name="quizOption"
-                                            checked={clickedOption === i + 1}
-                                            readOnly // Make the input read-only to prevent manual changes
                                         />
                                         {option}
                                     </label>
